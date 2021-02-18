@@ -26,7 +26,6 @@ apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'com.github.sherter.google-java-format'
 
-archivesBaseName = 'google-maps-services'
 group = 'com.google.maps'
 sourceCompatibility = 1.8
 
@@ -109,6 +108,8 @@ jacocoTestReport {
     }
 }
 
+ext.artifactId = 'google-maps-services'
+
 publishing {
     publications {
         MapsJavaUtils(MavenPublication) {
@@ -157,9 +158,15 @@ publishing {
                 }
             }
             groupId group
-            artifactId 'google-maps-services'
+            artifactId project.ext.artifactId
             version version
             from components.java
+        }
+        gpr(MavenPublication) {
+            groupId group
+            artifactId project.ext.artifactId
+            version version
+            from(components.java)
         }
     }
     repositories {
@@ -168,6 +175,14 @@ publishing {
             credentials {
                 username sonatypeUsername
                 password sonatypePassword
+            }
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/googlemaps/google-maps-services-java")
+            credentials {
+                username = 'googlemaps-bot'
+                password = githubPassword
             }
         }
     }
